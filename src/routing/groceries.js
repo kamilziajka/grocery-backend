@@ -31,8 +31,6 @@ router.get('/groceries', auth, (req, res) => {
 router.post('/groceries/:name', auth, (req, res) => {
   let key = `user-${req.user.name}-${req.params.name}`;
 
-  console.log(key);
-
   redis.get(key, (error, response) => {
     if (!!error) {
       return res.status(500).end();
@@ -67,6 +65,28 @@ router.put('/groceries/:name/:quantity', auth, (req, res) => {
   });
 
   redis.set(key, quantity, error => {
+    if (!!error) {
+      return res.status(500).end();
+    }
+
+    res.status(200).end();
+  });
+});
+
+router.delete('/groceries/:name', auth, (req, res) => {
+  let key = `user-${req.user.name}-${req.params.name}`;
+
+  redis.get(key, (error, response) => {
+    if (!!error) {
+      return res.status(500).end();
+    }
+
+    if (typeof response !== 'string') {
+      return res.status(406).end();
+    }
+  });
+
+  redis.del(key, error => {
     if (!!error) {
       return res.status(500).end();
     }
