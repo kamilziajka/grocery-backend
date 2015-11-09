@@ -19,6 +19,8 @@ export default () => {
   app.use((error, req, res, next) => {
     if (error.name === 'UnauthorizedError') {
       next();
+    } else {
+      console.error(error);
     }
   });
 
