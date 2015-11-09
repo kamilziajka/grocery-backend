@@ -25,7 +25,7 @@ router.post('/login', (req, res) => {
     if (!response || password !== response) {
       res.status(403).end();
     }
-    
+
     let token = jwt.sign({
       username: username
     }, SECRET);
