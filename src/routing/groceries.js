@@ -52,4 +52,27 @@ router.post('/groceries/:name', auth, (req, res) => {
   });
 });
 
+router.put('/groceries/:name/:quantity', auth, (req, res) => {
+  let key = `user-${req.user.name}-${req.params.name}`;
+  let quantity = req.params.quantity;
+
+  redis.get(key, (error, response) => {
+    if (!!error) {
+      return res.status(500).end();
+    }
+
+    if (typeof response !== 'string') {
+      return res.status(406).end();
+    }
+  });
+
+  redis.set(key, quantity, error => {
+    if (!!error) {
+      return res.status(500).end();
+    }
+
+    res.status(200).end();
+  });
+});
+
 export default router;
