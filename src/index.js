@@ -2,13 +2,17 @@
 
 import Express from 'express';
 import config from 'config';
+import bodyParser from 'body-parser';
 
 import routing from './routing';
 
-let app = new Express();
+const PORT = config.get('http.port');
 
-routing(app);
+export default () => {
+  let app = new Express();
+  app.use(bodyParser.json());
 
-let port = config.get('http.port');
+  routing(app);
 
-app.listen(port, () => console.log(`server up on port ${port}`));
+  app.listen(PORT, () => console.log(`server up on port ${PORT}`));
+}

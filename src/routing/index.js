@@ -3,5 +3,9 @@
 import login from './login';
 
 export default (app) => {
-  login(app);
+  let routers = [
+    login
+  ];
+
+  routers.forEach(router => app.use('/', router));
 }
