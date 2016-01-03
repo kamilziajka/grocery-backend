@@ -3,32 +3,31 @@
 import { Router } from 'express';
 import config from 'config';
 import jwt from 'jsonwebtoken';
-import redis from '../redis';
+import mongoose from 'mongoose';
 
 const SECRET = config.get('jwt.secret');
 const COOKIE = config.get('jwt.cookie');
-
-let router = new Router();
+const router = new Router();
 
 router.post('/login', (req, res) => {
-  let { name, password } = req.body;
+  const { name, password } = req.body;
 
   if (!name || !password) {
     return res.status(400).end();
   }
 
-  redis.get(`user-${name}`, (error, response) => {
-    if (!!error) {
+  const User = mongoose.model('User');
+
+  User.findOne({name, password}, (error, obj) => {
+    if (error) {
       return res.status(500).end();
     }
 
-    if (!response || password !== response) {
+    if (!obj) {
       return res.status(403).end();
     }
 
-    let token = jwt.sign({
-      name: name
-    }, SECRET);
+    const token = jwt.sign({name}, SECRET);
 
     return res
       .cookie(COOKIE, token)

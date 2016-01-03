@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 
 import routing from './routing';
+import './mongodb';
 
 const PORT = config.get('http.port');
 
