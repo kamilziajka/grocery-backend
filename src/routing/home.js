@@ -3,12 +3,9 @@
 import { Router } from 'express';
 import config from 'config';
 
-let router = new Router();
+const version = config.get('version');
+const router = new Router();
 
-router.get('/', (req, res) => {
-  res.json({
-    version: config.get('version')
-  }).end();
-});
+router.get('/', (req, res) => res.json({version}).end());
 
 export default router;

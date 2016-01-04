@@ -4,8 +4,8 @@ import home from './home';
 import login from './login';
 import groceries from './groceries';
 
-export default (app) => {
-  let routers = [login, home, groceries];
+const routers = [home, login, groceries];
 
-  routers.forEach(router => app.use('/', router));
-}
+export default (app) => routers.forEach(router => {
+  app.use('/', router);
+});

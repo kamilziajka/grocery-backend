@@ -2,97 +2,52 @@
 
 import { Router } from 'express';
 import auth from '../auth';
-import redis from '../redis';
+import mongodb from '../mongodb';
 
-let router = new Router();
+const Item = mongodb.model('Item');
+
+const router = new Router();
+
+export default router;
 
 router.get('/groceries', auth, (req, res) => {
-  redis.keys(`user-${req.user.name}-*`, (error, keys) => {
-    if (!!error) {
+  const user = req.user.name;
+
+  Item.find({user}, (error, items) => {
+    if (error) {
       return res.status(500).end();
     }
 
-    redis.mget(keys, (error, values) => {
-      if (!!error) {
+    const groceries = items.map(
+      ({guid, name, quantity}) => ({guid, name, quantity})
+    );
+
+    return res
+      .status(200)
+      .json(groceries)
+      .end();
+  });
+});
+
+router.post('/groceries', auth, (req, res) => {
+  Item.findOne({guid: req.body.guid}, (error, item) => {
+    if (error) {
+      return res.status(500).end();
+    }
+
+    if (item) {
+      return res.status(200).end();
+    }
+
+    (new Item({
+      ...req.body,
+      user: req.user.name
+    })).save(error => {
+      if (error) {
         return res.status(500).end();
       }
 
-      keys = keys.map(key => key.split('-').slice(-1)[0]);
-
-      let groceries = {};
-
-      keys.forEach((key, index) => groceries[key] = values[index]);
-
-      res.json(groceries).end();
+      return res.status(201).end();
     });
   });
 });
-
-router.post('/groceries/:name', auth, (req, res) => {
-  let key = `user-${req.user.name}-${req.params.name}`;
-
-  redis.get(key, (error, response) => {
-    if (!!error) {
-      return res.status(500).end();
-    }
-
-    if (typeof response === 'string') {
-      return res.status(406).end();
-    }
-  });
-
-  redis.set(key, 0, error => {
-    if (!!error) {
-      return res.status(500).end();
-    }
-
-    res.status(201).end();
-  });
-});
-
-router.put('/groceries/:name/:quantity', auth, (req, res) => {
-  let key = `user-${req.user.name}-${req.params.name}`;
-  let quantity = req.params.quantity;
-
-  redis.get(key, (error, response) => {
-    if (!!error) {
-      return res.status(500).end();
-    }
-
-    if (typeof response !== 'string') {
-      return res.status(406).end();
-    }
-  });
-
-  redis.set(key, quantity, error => {
-    if (!!error) {
-      return res.status(500).end();
-    }
-
-    res.status(200).end();
-  });
-});
-
-router.delete('/groceries/:name', auth, (req, res) => {
-  let key = `user-${req.user.name}-${req.params.name}`;
-
-  redis.get(key, (error, response) => {
-    if (!!error) {
-      return res.status(500).end();
-    }
-
-    if (typeof response !== 'string') {
-      return res.status(406).end();
-    }
-  });
-
-  redis.del(key, error => {
-    if (!!error) {
-      return res.status(500).end();
-    }
-
-    res.status(200).end();
-  });
-});
-
-export default router;
