@@ -3,20 +3,13 @@
 import mongoose from 'mongoose';
 import config from 'config';
 
-const host = config.get('mongodb.host');
-const port = config.get('mongodb.port');
-const name = config.get('mongodb.name');
+const { host, port, name } = config.get('mongodb');
 const uri = `mongodb://${host}:${port}/${name}`;
 
 const connection = mongoose.createConnection(uri);
 
-connection.on('error', () => {
-  console.log('mongodb connection error')
-});
-
-connection.on('disconnected', () => {
-  console.log('mongodb disconnected');
-});
+connection.on('error', () => console.log('mongodb connection error'));
+connection.on('disconnected', () => console.log('mongodb disconnected'));
 
 connection.model('User', {
   name: String,

@@ -5,8 +5,7 @@ import config from 'config';
 import jwt from 'jsonwebtoken';
 import mongodb from '../mongodb';
 
-const SECRET = config.get('jwt.secret');
-const COOKIE = config.get('jwt.cookie');
+const { SECRET, COOKIE } = config.get('jwt');
 const router = new Router();
 
 router.post('/login', (req, res) => {
