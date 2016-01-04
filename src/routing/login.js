@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import config from 'config';
 import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
+import mongodb from '../mongodb';
 
 const SECRET = config.get('jwt.secret');
 const COOKIE = config.get('jwt.cookie');
@@ -16,7 +16,7 @@ router.post('/login', (req, res) => {
     return res.status(400).end();
   }
 
-  const User = mongoose.model('User');
+  const User = mongodb.model('User');
 
   User.findOne({name, password}, (error, obj) => {
     if (error) {
