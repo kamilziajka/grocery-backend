@@ -8,10 +8,6 @@
     "port": "27017",
     "name": "grocery"
   },
-  "redis": {
-    "host": "localhost",
-    "port": 6379
-  },
   "jwt": {
     "cookie": "token",
     "secret": "LoremIpsumDolorSitAmet"
