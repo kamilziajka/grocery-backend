@@ -3,9 +3,9 @@
 import config from 'config';
 import jwt from 'express-jwt';
 
-const SECRET = config.get('jwt.secret');
+const secret = config.get('jwt.secret');
 
 export default jwt({
-  secret: SECRET,
+  secret: secret,
   getToken: (req) => req.cookies[config.get('jwt.cookie')]
 })

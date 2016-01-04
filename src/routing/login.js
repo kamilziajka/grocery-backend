@@ -5,7 +5,7 @@ import config from 'config';
 import jwt from 'jsonwebtoken';
 import mongodb from '../mongodb';
 
-const { SECRET, COOKIE } = config.get('jwt');
+const { secret, cookie } = config.get('jwt');
 const router = new Router();
 
 router.post('/login', (req, res) => {
@@ -26,10 +26,10 @@ router.post('/login', (req, res) => {
       return res.status(403).end();
     }
 
-    const token = jwt.sign({name}, SECRET);
+    const token = jwt.sign({name}, secret);
 
     return res
-      .cookie(COOKIE, token)
+      .cookie(cookie, token)
       .status(200)
       .end();
   });
