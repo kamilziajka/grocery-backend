@@ -18,13 +18,9 @@ router.get('/groceries', auth, (req, res) => {
       return res.status(500).end();
     }
 
-    const groceries = items.map(
-      ({guid, name, quantity}) => ({guid, name, quantity})
-    );
-
     return res
       .status(200)
-      .json(groceries)
+      .json(items)
       .end();
   });
 });

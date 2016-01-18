@@ -20,7 +20,10 @@ connection.model('Item', {
   name: String,
   quantity: Number,
   guid: String,
-  user: String
+  user: String,
+  priority: Number,
+  category: String,
+  update: String
 });
 
 export default connection;
