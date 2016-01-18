@@ -18,6 +18,12 @@ router.get('/groceries', auth, (req, res) => {
       return res.status(500).end();
     }
 
+    items.forEach(item => {
+      item.category = item.category || 'default';
+      item.priority = item.priority || 1;
+      item.update = item.update || '2000-01-01T00:00:00+0000'
+    });
+
     return res
       .status(200)
       .json(items)
